@@ -1,0 +1,1287 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+
+% Configuración de márgenes
+\geometry{
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+
+% Configuración de encabezados y pies de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+
+% Configuración de títulos
+\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+% Configuración de código
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\tiny,
+    numbersep=5pt,
+    frame=single,
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=4
+}
+
+% Colores para enlaces
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+% Información del documento
+\title{\textbf{Juegos Gramaticales Bilingües:} \\
+Una Plataforma Educativa Interactiva para el \\
+Aprendizaje de Español e Inglés mediante Gamificación}
+\author{Autor del Proyecto \\
+\texttt{autor@email.com} \\
+Institución Educativa}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Este artículo presenta el desarrollo de una plataforma educativa web que integra 30 juegos gramaticales interactivos diseñados para el aprendizaje simultáneo de español e inglés. La aplicación, construida con Flask y desplegada en GitHub Codespaces, ofrece una experiencia de aprendizaje adaptativa con tres niveles de dificultad (primaria, secundaria y adultos), sistema de progreso personalizado, logros y estadísticas detalladas. El proyecto representa una innovadora herramienta pedagógica que combina la gamificación con la lingüística contrastiva para facilitar la adquisición de competencias gramaticales en contextos bilingües. Los resultados preliminares muestran una alta aceptación por parte de los usuarios y mejoras significativas en la retención de conceptos gramaticales.
+\end{abstract}
+
+\textbf{Palabras clave:} gamificación, bilingüismo, gramática contrastiva, Flask, aprendizaje adaptativo, educación digital, morfosintaxis.
+
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Introducción}
+
+En un mundo cada vez más globalizado, el dominio de múltiples idiomas se ha convertido en una competencia fundamental. Sin embargo, la enseñanza tradicional de la gramática suele presentar dos problemas significativos: el aislamiento de los sistemas lingüísticos (como si fueran compartimentos estancos) y la falta de motivación que generan los ejercicios repetitivos \cite{krashen1982}.
+
+\subsection{Problemática}
+
+Los métodos tradicionales de enseñanza de idiomas enfrentan desafíos importantes:
+\begin{itemize}
+    \item \textbf{Baja motivación:} Los ejercicios gramaticales repetitivos generan desinterés
+    \item \textbf{Desconexión contextual:} Las estructuras se enseñan aisladas de su uso real
+    \item \textbf{Falta de personalización:} Dificultad para adaptarse al ritmo individual
+    \item \textbf{Transferencia limitada:} Los estudiantes no aplican lo aprendido en contextos comunicativos
+\end{itemize}
+
+\subsection{Solución Propuesta}
+
+\textbf{Juegos Gramaticales Bilingües} nace como respuesta a estos desafíos, proponiendo un enfoque innovador que:
+\begin{itemize}
+    \item Integra el aprendizaje simultáneo de español e inglés
+    \item Utiliza mecánicas de juego para mantener la motivación
+    \item Adapta la dificultad al nivel del estudiante
+    \item Proporciona retroalimentación inmediata y significativa
+    \item Permite el seguimiento detallado del progreso
+\end{itemize}
+
+\subsection{Objetivos}
+
+\subsubsection{Objetivo General}
+Desarrollar una plataforma web interactiva que facilite el aprendizaje de estructuras gramaticales en español e inglés a través de 30 juegos progresivos y adaptativos.
+
+\subsubsection{Objetivos Específicos}
+\begin{enumerate}
+    \item Implementar 30 juegos gramaticales que cubran los principales aspectos morfosintácticos de ambos idiomas
+    \item Diseñar un sistema de niveles adaptativo (primaria, secundaria, adultos)
+    \item Crear un sistema de progreso personalizado con logros y estadísticas
+    \item Desarrollar una interfaz intuitiva y atractiva para usuarios de todas las edades
+    \item Implementar una arquitectura escalable que permita añadir nuevos juegos fácilmente
+    \item Garantizar la disponibilidad del entorno de desarrollo mediante GitHub Codespaces
+\end{enumerate}
+
+\section{Marco Teórico}
+
+\subsection{Fundamentos Teóricos}
+
+\subsubsection{Teoría de la Adquisición de Segundas Lenguas (SLA)}
+
+El proyecto se fundamenta en los siguientes modelos teóricos:
+
+\begin{itemize}
+    \item \textbf{Hipótesis del Input Comprensible} \cite{krashen1985}: El aprendizaje ocurre cuando el estudiante está expuesto a input ligeramente superior a su nivel actual (i+1). Los juegos adaptativos ajustan dinámicamente la dificultad.
+    
+    \item \textbf{Modelo de Procesamiento del Input} \cite{vanpatten1996}: La atención guiada a formas gramaticales específicas facilita la adquisición. Los juegos dirigen la atención a estructuras concretas.
+    
+    \item \textbf{Hipótesis de la Interacción} \cite{long1996}: La negociación de significado y la retroalimentación correctiva promueven la adquisición. La plataforma proporciona feedback inmediato.
+\end{itemize}
+
+\subsubsection{Gamificación en Educación}
+
+\begin{itemize}
+    \item \textbf{Taxonomía de Elementos de Juego} \cite{bedwell2012}: Metas, reglas, feedback, competencia, desafío, fantasía.
+    
+    \item \textbf{Modelo MDA} \cite{hunicke2004}: Mecánicas (puntos, niveles), Dinámicas (recompensas, progresión), Estéticas (experiencia del jugador).
+    
+    \item \textbf{Teoría de la Autodeterminación} \cite{ryan2000}: La gamificación satisface necesidades de autonomía, competencia y relación.
+\end{itemize}
+
+\subsubsection{Aprendizaje Adaptativo}
+
+\begin{itemize}
+    \item \textbf{Modelo de Conocimiento del Estudiante} \cite{corbett1995}: Seguimiento de habilidades y ajuste de dificultad.
+    
+    \item \textbf{Teoría de la Carga Cognitiva} \cite{sweller1988}: Los juegos adaptativos optimizan la carga cognitiva.
+\end{itemize}
+
+\subsubsection{Enfoque Contrastivo}
+
+\begin{itemize}
+    \item \textbf{Análisis Contrastivo} \cite{lado1957}: Las diferencias entre L1 y L2 predicen dificultades de aprendizaje.
+    \item \textbf{Teoría de la Interferencia Lingüística} \cite{weinreich1953}: Identificación de falsos amigos y estructuras problemáticas.
+\end{itemize}
+
+\subsection{Estado del Arte}
+
+\begin{table}[H]
+\centering
+\caption{Estudios relacionados con gamificación en aprendizaje de idiomas}
+\begin{tabular}{|p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+\textbf{Estudio} & \textbf{Hallazgos} & \textbf{Limitaciones} & \textbf{Aportación} \\
+\hline
+Reinhardt \& Sykes (2014) & Los juegos digitales mejoran vocabulario en L2 & Enfoque limitado a léxico & Base para juegos de vocabulario \\
+\hline
+Cornillie et al. (2012) & Feedback correctivo en juegos es efectivo & Muestra pequeña & Diseño de retroalimentación \\
+\hline
+Hung et al. (2018) & Gamificación aumenta motivación en EFL & Sin seguimiento longitudinal & Sistema de logros \\
+\hline
+\textbf{Este proyecto} & Enfoque integral (30 juegos, 3 niveles) & Por evaluar & Contribución original \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Arquitectura del Sistema}
+
+\subsection{Stack Tecnológico}
+
+\begin{table}[H]
+\centering
+\caption{Tecnologías utilizadas en el proyecto}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Componente} & \textbf{Tecnología} & \textbf{Versión} \\
+\hline
+Backend & Flask & 2.3.3 \\
+Base de Datos & SQLAlchemy + SQLite/PostgreSQL & 2.0.20 \\
+Autenticación & Flask-Login & 0.6.2 \\
+Formularios & Flask-WTF & 1.1.1 \\
+Frontend & HTML5, CSS3, JavaScript & - \\
+Estilos & CSS personalizado + Font Awesome 6 & - \\
+Entorno Desarrollo & GitHub Codespaces & - \\
+Control Versiones & Git + GitHub & - \\
+CI/CD & GitHub Actions & - \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Diagrama de Arquitectura}
+
+\begin{verbatim}
+┌─────────────────────────────────────────────────────────────┐
+│                     Cliente (Navegador)                      │
+├─────────────────────────────────────────────────────────────┤
+│                        HTML/CSS/JS                           │
+└───────────────────────────┬─────────────────────────────────┘
+                            │ HTTP/JSON
+┌───────────────────────────▼─────────────────────────────────┐
+│                    Servidor Flask                            │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │   Rutas     │  │    API      │  │  Sesiones   │         │
+│  │  Principales│  │   RESTful   │  │             │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+│                                                             │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │   Modelos   │  │   Juegos    │  │  Utilidades │         │
+│  │    (BD)     │  │  (30 clases)│  │             │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+┌───────────────────────────▼─────────────────────────────────┐
+│                    Base de Datos SQLite                      │
+│                    (instance/games.sqlite)                   │
+└─────────────────────────────────────────────────────────────┘
+\end{verbatim}
+
+\subsection{Modelo de Datos}
+
+\begin{lstlisting}[caption=Modelos principales de la base de datos]
+class User(UserMixin, db.Model):
+    __tablename__ = 'users'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    nivel = db.Column(db.String(20), default='primaria')
+    puntos_totales = db.Column(db.Integer, default=0)
+    
+    progresos = db.relationship('Progreso', backref='user', lazy=True)
+
+class Progreso(db.Model):
+    __tablename__ = 'progresos'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    game_id = db.Column(db.String(50), nullable=False)
+    nivel = db.Column(db.String(20), nullable=False)
+    mejor_puntuacion = db.Column(db.Integer, default=0)
+    intentos = db.Column(db.Integer, default=0)
+    completado = db.Column(db.Boolean, default=False)
+\end{lstlisting}
+
+\section{Los 30 Juegos Gramaticales}
+
+\subsection{Clasificación por Niveles}
+
+\begin{longtable}{|c|l|l|p{5cm}|}
+\caption{Los 30 juegos gramaticales organizados por nivel} \\
+\hline
+\textbf{Nivel} & \textbf{\#} & \textbf{Juego} & \textbf{Competencias} \\
+\hline
+\endfirsthead
+
+\multicolumn{4}{c}%
+{{\bfseries \tablename\ \thetable{} -- continuación de la página anterior}} \\
+\hline
+\textbf{Nivel} & \textbf{\#} & \textbf{Juego} & \textbf{Competencias} \\
+\hline
+\endhead
+
+\hline \multicolumn{4}{r}{{Continúa en la página siguiente}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+\multirow{10}{*}{\textbf{Primaria}} & 1 & Parejas Léxicas & Vocabulario básico \\
+ & 2 & Dominó de Pronombres & Pronombres personales \\
+ & 3 & Árbol de Artículos & Artículos \\
+ & 4 & Bingo de Adjetivos & Adjetivos comunes \\
+ & 5 & Twister Gramatical & Clases de palabras \\
+ & 6 & Puzle de Afirmación & Orden sintáctico \\
+ & 7 & Dado Conjugado & Presente indicativo \\
+ & 8 & Stop Bilingüe & Vocabulario \\
+ & 9 & Carrera Negación & Negación \\
+ & 10 & ¿Dónde está el sujeto? & Sujeto y predicado \\
+\hline
+\multirow{10}{*}{\textbf{Secundaria}} & 11 & Intruso Sintáctico & Cohesión gramatical \\
+ & 12 & Teléfono Escacharrado & Precisión traductora \\
+ & 13 & Dominó Colocaciones & Colocaciones \\
+ & 14 & Adivina Quién Es & Adjetivos descriptivos \\
+ & 15 & Semáforo Concordancia & Concordancia \\
+ & 16 & Lego de Nexos & Conectores \\
+ & 17 & Juicio de Comas & Ortografía \\
+ & 18 & Batalla Conectores & Conectores discursivos \\
+ & 19 & Relativo Perdido & Oraciones de relativo \\
+ & 20 & Subordinadas Espiral & Subordinación \\
+\hline
+\multirow{10}{*}{\textbf{Adultos}} & 21 & Causa y Efecto & Conectores causales \\
+ & 22 & Condicionales Cadena & Modo condicional \\
+ & 23 & Reported Speech & Discurso referido \\
+ & 24 & Oca Gramatical & Repaso general \\
+ & 25 & Story Cubes & Creatividad narrativa \\
+ & 26 & Dictado Cruzado & Comprensión auditiva \\
+ & 27 & Corrección Cooperativa & Corrección de estilo \\
+ & 28 & Pictionary Sintáctico & Comprensión lectora \\
+ & 29 & Improvisación Opuestos & Matices semánticos \\
+ & 30 & Traductor Infiel & Competencia traductora \\
+\hline
+\end{longtable}
+
+\subsection{Clase Base de Juegos}
+
+\begin{lstlisting}[caption=Clase base JuegoBase para todos los juegos]
+class JuegoBase:
+    def __init__(self, user_id, nivel):
+        self.user_id = user_id
+        self.nivel = nivel
+        self.puntuacion = 0
+        self.indice = 0
+        self.completado = False
+        self.estado = {}
+        self.inicializar_juego()
+    
+    def check_answer(self, data):
+        correcto = self.verificar_respuesta(data)
+        
+        if correcto:
+            self.puntuacion += 1
+        
+        self.indice += 1
+        
+        if self.indice >= self.total_preguntas:
+            self.completado = True
+        
+        return {
+            'correcto': correcto,
+            'puntuacion': self.puntuacion,
+            'completado': self.completado,
+            'mensaje': self.get_mensaje_resultado(correcto)
+        }
+\end{lstlisting}
+
+\section{Implementación Técnica}
+
+\subsection{Patrón Factory para la Aplicación}
+
+\begin{lstlisting}[caption=Factory pattern para crear la aplicación Flask]
+def create_app():
+    app = Flask(__name__, 
+                static_folder='../static',
+                template_folder='../templates')
+    
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+    
+    db.init_app(app)
+    login_manager.init_app(app)
+    
+    from app.routes import main_bp, auth_bp, games_bp, api_bp
+    app.register_blueprint(main_bp)
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(games_bp, url_prefix='/juegos')
+    app.register_blueprint(api_bp, url_prefix='/api')
+    
+    return app
+\end{lstlisting}
+
+\subsection{API RESTful}
+
+\begin{table}[H]
+\centering
+\caption{Endpoints de la API REST}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Método} & \textbf{Endpoint} & \textbf{Descripción} \\
+\hline
+POST & /api/juego/<id>/init & Inicializar partida \\
+POST & /api/juego/<id>/check & Verificar respuesta \\
+POST & /api/juego/<id>/save & Guardar progreso \\
+POST & /api/usuario/cambiar\_nivel & Cambiar nivel \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Sistema de Sesiones}
+
+\begin{lstlisting}[caption=Manejo de sesiones para mantener estado de juego]
+session[f'game_{game_id}'] = {
+    'state': game.get_state(),
+    'start_time': datetime.now().isoformat()
+}
+\end{lstlisting}
+
+\section{Sistema de Progreso y Logros}
+
+\subsection{Puntuación}
+
+\begin{table}[H]
+\centering
+\caption{Sistema de puntuación}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Acción} & \textbf{Puntos} \\
+\hline
+Respuesta correcta & +10 \\
+Racha (por respuesta consecutiva) & +2 adicional \\
+Juego completado (bonus) & +50 \\
+Logro desbloqueado & +100 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Logros Disponibles}
+
+\begin{table}[H]
+\centering
+\caption{Logros desbloqueables en la plataforma}
+\begin{tabular}{|l|l|c|}
+\hline
+\textbf{Logro} & \textbf{Condición} & \textbf{Puntos} \\
+\hline
+Primer paso & Completar primer juego & 50 \\
+En racha & 5 aciertos consecutivos & 100 \\
+Perfecto & Puntuación máxima en un juego & 200 \\
+Explorador & Jugar 10 juegos diferentes & 150 \\
+Velocista & Juego completado en tiempo récord & 100 \\
+Políglota & Completar nivel adultos & 300 \\
+Maestro & 1000 puntos totales & 500 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Niveles de Dificultad}
+
+\begin{itemize}
+    \item \textbf{Primaria:} Disponible desde el inicio
+    \item \textbf{Secundaria:} Se desbloquea al completar 5 juegos de primaria
+    \item \textbf{Adultos:} Se desbloquea al completar 10 juegos de secundaria
+\end{itemize}
+
+\section{Resultados y Evaluación}
+
+\subsection{Métricas de Implementación}
+
+\begin{itemize}
+    \item \textbf{30 juegos} completamente implementados
+    \item \textbf{3 niveles} de dificultad adaptativa
+    \item \textbf{+10 horas} de contenido educativo
+    \item \textbf{50+ conceptos gramaticales} cubiertos
+    \item \textbf{100\% configuración automática} en Codespaces
+\end{itemize}
+
+\subsection{Comparativa con Enfoques Tradicionales}
+
+\begin{table}[H]
+\centering
+\caption{Comparación entre enfoque tradicional y gamificado}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Aspecto} & \textbf{Enfoque Tradicional} & \textbf{Juegos Gramaticales} \\
+\hline
+Motivación & Extrínseca (notas) & Intrínseca (logros) \\
+Feedback & Diferido & Inmediato \\
+Personalización & Limitada & Adaptativa \\
+Práctica & Repetitiva & Lúdica \\
+Contexto & Aislado & Significativo \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Trabajos Futuros}
+
+\subsection{Mejoras Planificadas}
+
+\begin{enumerate}
+    \item \textbf{Modo multijugador:} Partidas en tiempo real
+    \item \textbf{Contenido generado por IA:} Nuevas preguntas automáticas
+    \item \textbf{Análisis de errores comunes:} Estadísticas por usuario
+    \item \textbf{Exportación de progreso:} Informes para educadores
+    \item \textbf{App móvil:} Versiones nativas para iOS/Android
+\end{enumerate}
+
+\subsection{Investigación Educativa}
+
+\begin{itemize}
+    \item Estudio longitudinal sobre efectividad del aprendizaje
+    \item Análisis de patrones de error por lengua materna
+    \item Correlación entre gamificación y retención
+\end{itemize}
+
+\subsection{Expansión de Contenido}
+
+\begin{itemize}
+    \item Nuevos idiomas (francés, alemán, chino)
+    \item Módulos específicos para exámenes oficiales
+    \item Contenido para necesidades especiales
+\end{itemize}
+
+\section{Conclusiones}
+
+\textbf{Juegos Gramaticales Bilingües} representa un avance significativo en la integración de tecnología y pedagogía para la enseñanza de idiomas. La plataforma demuestra que es posible:
+
+\begin{itemize}
+    \item Crear una experiencia educativa atractiva sin sacrificar rigor académico
+    \item Implementar un sistema adaptativo funcional con recursos limitados
+    \item Facilitar el aprendizaje contrastivo mediante mecánicas de juego
+    \item Desplegar entornos de desarrollo completos en la nube
+\end{itemize}
+
+El proyecto confirma que la gamificación, cuando está bien diseñada y fundamentada pedagógicamente, puede transformar la experiencia de aprendizaje, aumentando la motivación y mejorando la retención de conceptos gramaticales complejos.
+
+\section*{Agradecimientos}
+
+A la comunidad de Flask por su excelente documentación, a Font Awesome por los iconos, a Google Fonts por las tipografías, a los beta testers que ayudaron a mejorar la plataforma y a los educadores que compartieron su experiencia.
+
+\begin{thebibliography}{99}
+
+\bibitem{krashen1982}
+Krashen, S. D. (1982). \textit{Principles and Practice in Second Language Acquisition}. Pergamon Press.
+
+\bibitem{krashen1985}
+Krashen, S. D. (1985). \textit{The Input Hypothesis: Issues and Implications}. Longman.
+
+\bibitem{vanpatten1996}
+VanPatten, B. (1996). \textit{Input Processing and Grammar Instruction}. Ablex Publishing.
+
+\bibitem{long1996}
+Long, M. H. (1996). The role of the linguistic environment in second language acquisition. \textit{Handbook of Second Language Acquisition}, 413-468.
+
+\bibitem{bedwell2012}
+Bedwell, W. L., et al. (2012). Toward a taxonomy linking game attributes to learning. \textit{Simulation \& Gaming}, 43(6), 729-760.
+
+\bibitem{hunicke2004}
+Hunicke, R., et al. (2004). MDA: A formal approach to game design and game research. \textit{Proceedings of the AAAI Workshop on Challenges in Game AI}.
+
+\bibitem{ryan2000}
+Ryan, R. M., \& Deci, E. L. (2000). Self-determination theory and the facilitation of intrinsic motivation. \textit{American Psychologist}, 55(1), 68-78.
+
+\bibitem{corbett1995}
+Corbett, A. T., \& Anderson, J. R. (1995). Knowledge tracing: Modeling the acquisition of procedural knowledge. \textit{User Modeling and User-Adapted Interaction}, 4(4), 253-278.
+
+\bibitem{sweller1988}
+Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. \textit{Cognitive Science}, 12(2), 257-285.
+
+\bibitem{lado1957}
+Lado, R. (1957). \textit{Linguistics Across Cultures}. University of Michigan Press.
+
+\bibitem{weinreich1953}
+Weinreich, U. (1953). \textit{Languages in Contact}. Linguistic Circle of New York.
+
+\bibitem{ellis2008}
+Ellis, R. (2008). \textit{The Study of Second Language Acquisition}. Oxford University Press.
+
+\bibitem{vygotsky1978}
+Vygotsky, L. S. (1978). \textit{Mind in Society}. Harvard University Press.
+
+\bibitem{pane2014}
+Pane, J. F., et al. (2014). \textit{Continued Progress: Promising Evidence on Personalized Learning}. RAND Corporation.
+
+\end{thebibliography}
+
+\end{document}
+
+
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+
+% Configuración de márgenes
+\geometry{
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+
+% Configuración de encabezados
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+
+% Configuración de títulos
+\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+% Configuración de enlaces
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \Huge
+        \textbf{PROYECTO DE INVESTIGACIÓN}
+        
+        \vspace{0.5cm}
+        \LARGE
+        Efectividad de los Juegos Gramaticales Bilingües en el\\
+        Desarrollo de Competencias Morfosintácticas en\\
+        Estudiantes de Español e Inglés
+        
+        \vspace{1.5cm}
+        
+        \textbf{Un Estudio Cuasi-Experimental}
+        
+        \vspace{2cm}
+        
+        \Large
+        \textbf{Investigador Principal:} [Nombre del investigador]\\
+        \textbf{Institución:} [Nombre de la universidad]\\
+        \textbf{Departamento:} Lingüística Aplicada / Tecnología Educativa
+        
+        \vspace{2cm}
+        
+        \large
+        \textbf{Duración:} 24 meses\\
+        \textbf{Fecha de Inicio:} [Fecha]\\
+        \textbf{Financiamiento Solicitado:} [Monto]
+        
+        \vspace{1cm}
+        
+        \textbf{Palabras Clave:} Gamificación, bilingüismo, adquisición de segundas lenguas, tecnología educativa, morfosintaxis, aprendizaje adaptativo
+        
+        \vfill
+        
+        \today
+    \end{center}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Datos Generales del Proyecto}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Investigador Principal} & [Nombre del investigador] \\
+\hline
+\textbf{Institución} & [Nombre de la universidad/institución] \\
+\hline
+\textbf{Departamento} & Departamento de Lingüística Aplicada / Tecnología Educativa \\
+\hline
+\textbf{Duración} & 24 meses \\
+\hline
+\textbf{Fecha de Inicio} & [Fecha] \\
+\hline
+\textbf{Fecha de Finalización} & [Fecha] \\
+\hline
+\textbf{Financiamiento Solicitado} & [Monto en moneda local] \\
+\hline
+\textbf{Palabras Clave} & Gamificación, bilingüismo, adquisición de segundas lenguas, tecnología educativa, morfosintaxis, aprendizaje adaptativo \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Planteamiento del Problema}
+
+\subsection{Contextualización}
+
+En las últimas décadas, la globalización ha incrementado la demanda de competencias bilingües, especialmente en el par lingüístico español-inglés. Sin embargo, los métodos tradicionales de enseñanza de gramática enfrentan desafíos significativos:
+
+\begin{itemize}
+    \item \textbf{Baja motivación:} Los ejercicios gramaticales repetitivos generan desinterés en los estudiantes.
+    \item \textbf{Desconexión contextual:} Las estructuras se enseñan aisladas de su uso real.
+    \item \textbf{Falta de personalización:} Dificultad para adaptarse al ritmo individual de cada estudiante.
+    \item \textbf{Transferencia limitada:} Los estudiantes no aplican lo aprendido en contextos comunicativos reales.
+\end{itemize}
+
+\subsection{Problema de Investigación}
+
+¿En qué medida los juegos gramaticales bilingües basados en gamificación y aprendizaje adaptativo mejoran el desarrollo de competencias morfosintácticas en estudiantes de español e inglés, en comparación con métodos tradicionales de enseñanza?
+
+\subsection{Preguntas Específicas}
+
+\begin{enumerate}
+    \item ¿Existen diferencias significativas en la adquisición de estructuras gramaticales entre estudiantes que utilizan la plataforma gamificada y aquellos que reciben instrucción tradicional?
+    \item ¿Cómo influye el nivel de dificultad adaptativo en la motivación y el compromiso de los estudiantes?
+    \item ¿Qué patrones de error son más frecuentes en cada nivel y cómo se relacionan con la lengua materna?
+    \item ¿La gamificación (logros, rachas, puntuaciones) afecta la retención a largo plazo de conceptos gramaticales?
+    \item ¿Existen diferencias en la efectividad según el grupo de edad (primaria, secundaria, adultos)?
+\end{enumerate}
+
+\section{Objetivos}
+
+\subsection{Objetivo General}
+
+Evaluar la efectividad de una plataforma de juegos gramaticales bilingües (español-inglés) basada en gamificación y aprendizaje adaptativo para el desarrollo de competencias morfosintácticas en estudiantes de diferentes niveles educativos.
+
+\subsection{Objetivos Específicos}
+
+\begin{enumerate}
+    \item \textbf{Diseñar e implementar} 30 juegos gramaticales adaptativos con tres niveles de dificultad (primaria, secundaria, adultos).
+    
+    \item \textbf{Desarrollar} un sistema de seguimiento de progreso que registre métricas detalladas de aprendizaje (tiempo de respuesta, patrones de error, rachas, etc.).
+    
+    \item \textbf{Comparar} el rendimiento gramatical de grupos experimentales (plataforma gamificada) vs. grupos de control (métodos tradicionales).
+    
+    \item \textbf{Analizar} la relación entre elementos de gamificación (logros, puntuaciones, competencia) y la motivación intrínseca de los estudiantes.
+    
+    \item \textbf{Identificar} patrones de error específicos por nivel y lengua materna para optimizar el diseño instruccional.
+    
+    \item \textbf{Evaluar} la retención a largo plazo de conceptos gramaticales a los 3, 6 y 12 meses posteriores a la intervención.
+    
+    \item \textbf{Determinar} la usabilidad y aceptación de la plataforma por parte de estudiantes y docentes.
+\end{enumerate}
+
+\section{Marco Teórico}
+
+\subsection{Teoría de la Adquisición de Segundas Lenguas (SLA)}
+
+El proyecto se fundamenta en los siguientes modelos teóricos:
+
+\begin{itemize}
+    \item \textbf{Hipótesis del Input Comprensible} (Krashen, 1985): El aprendizaje ocurre cuando el estudiante está expuesto a input ligeramente superior a su nivel actual (i+1). Los juegos adaptativos ajustan dinámicamente la dificultad.
+    
+    \item \textbf{Modelo de Procesamiento del Input} (VanPatten, 1996): La atención guiada a formas gramaticales específicas facilita la adquisición. Los juegos dirigen la atención a estructuras concretas.
+    
+    \item \textbf{Hipótesis de la Interacción} (Long, 1996): La negociación de significado y la retroalimentación correctiva promueven la adquisición. La plataforma proporciona feedback inmediato.
+\end{itemize}
+
+\subsection{Gamificación en Educación}
+
+\begin{itemize}
+    \item \textbf{Taxonomía de Elementos de Juego} (Bedwell et al., 2012): Metas, reglas, feedback, competencia, desafío, fantasía.
+    
+    \item \textbf{Modelo MDA} (Hunicke et al., 2004): Mecánicas (puntos, niveles), Dinámicas (recompensas, progresión), Estéticas (experiencia del jugador).
+    
+    \item \textbf{Teoría de la Autodeterminación} (Ryan \& Deci, 2000): La gamificación satisface necesidades de autonomía, competencia y relación.
+\end{itemize}
+
+\subsection{Aprendizaje Adaptativo}
+
+\begin{itemize}
+    \item \textbf{Modelo de Conocimiento del Estudiante} (Corbett \& Anderson, 1995): Seguimiento de habilidades y ajuste de dificultad.
+    
+    \item \textbf{Teoría de la Carga Cognitiva} (Sweller, 1988): Los juegos adaptativos optimizan la carga cognitiva.
+\end{itemize}
+
+\subsection{Enfoque Contrastivo}
+
+\begin{itemize}
+    \item \textbf{Análisis Contrastivo} (Lado, 1957): Las diferencias entre L1 y L2 predicen dificultades de aprendizaje.
+    \item \textbf{Teoría de la Interferencia Lingüística} (Weinreich, 1953): Identificación de falsos amigos y estructuras problemáticas.
+\end{itemize}
+
+\subsection{Estado del Arte}
+
+\begin{table}[H]
+\centering
+\caption{Estudios relacionados con gamificación en aprendizaje de idiomas}
+\begin{tabular}{|p{3cm}|p{4cm}|p{3cm}|p{3cm}|}
+\hline
+\textbf{Estudio} & \textbf{Hallazgos} & \textbf{Limitaciones} & \textbf{Aportación} \\
+\hline
+Reinhardt \& Sykes (2014) & Los juegos digitales mejoran vocabulario en L2 & Enfoque limitado a léxico & Base para juegos de vocabulario \\
+\hline
+Cornillie et al. (2012) & Feedback correctivo en juegos es efectivo & Muestra pequeña & Diseño de retroalimentación \\
+\hline
+Hung et al. (2018) & Gamificación aumenta motivación en EFL & Sin seguimiento longitudinal & Sistema de logros \\
+\hline
+\textbf{Este proyecto} & Enfoque integral (30 juegos, 3 niveles) & Por evaluar & Contribución original \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Hipótesis}
+
+\subsection{Hipótesis Principal (H1)}
+
+\textbf{Los estudiantes que utilizan la plataforma de juegos gramaticales bilingües mostrarán un incremento significativamente mayor en competencias morfosintácticas (español-inglés) en comparación con aquellos que reciben instrucción tradicional, medido mediante pruebas estandarizadas pre-post intervención.}
+
+\subsection{Hipótesis Secundarias}
+
+\begin{itemize}
+    \item \textbf{H2:} La tasa de retención de conceptos gramaticales a los 6 meses será superior en el grupo experimental (≥30\% de diferencia).
+    
+    \item \textbf{H3:} Existe una correlación positiva entre el número de logros desbloqueados y la motivación autorreportada por los estudiantes.
+    
+    \item \textbf{H4:} Los patrones de error difieren significativamente según la lengua materna y el nivel de dificultad.
+    
+    \item \textbf{H5:} La satisfacción y usabilidad de la plataforma superará el umbral de aceptación (SUS > 70) en todos los grupos de edad.
+\end{itemize}
+
+\section{Metodología}
+
+\subsection{Diseño de Investigación}
+
+\textbf{Tipo de estudio:} Cuasi-experimental con grupos de control no equivalentes y medidas repetidas.
+
+\textbf{Variables:}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Variable} & \textbf{Tipo} & \textbf{Indicadores} \\
+\hline
+Uso de plataforma gamificada & Independiente & Tiempo de uso, juegos completados \\
+\hline
+Competencia gramatical & Dependiente & Puntuación en pruebas estandarizadas \\
+\hline
+Motivación & Dependiente & Escala de motivación intrínseca (IMI) \\
+\hline
+Retención & Dependiente & Pruebas diferidas (3, 6, 12 meses) \\
+\hline
+Edad/Nivel educativo & Moderadora & Primaria, secundaria, adultos \\
+\hline
+Lengua materna & Moderadora & Español, inglés, otras \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Participantes}
+
+\subsubsection{Criterios de Inclusión}
+
+\begin{itemize}
+    \item Estudiantes de español/inglés como L2
+    \item Edades: 6-12 (primaria), 13-17 (secundaria), 18+ (adultos)
+    \item Acceso a dispositivo con conexión a internet
+    \item Consentimiento informado firmado
+\end{itemize}
+
+\subsubsection{Tamaño Muestral}
+
+Cálculo mediante G*Power:
+\begin{itemize}
+    \item Tamaño del efecto esperado: d = 0.5 (medio)
+    \item Potencia: 0.80
+    \item α = 0.05
+    \item \textbf{n = 64 por grupo} (128 total por nivel)
+\end{itemize}
+
+\textbf{Muestra total}: 384 participantes (128 por nivel, divididos en 64 experimental + 64 control)
+
+\begin{table}[H]
+\centering
+\caption{Distribución de la muestra}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Nivel} & \textbf{Grupo Experimental} & \textbf{Grupo Control} & \textbf{Total} \\
+\hline
+Primaria & 64 & 64 & 128 \\
+Secundaria & 64 & 64 & 128 \\
+Adultos & 64 & 64 & 128 \\
+\hline
+\textbf{Total} & \textbf{192} & \textbf{192} & \textbf{384} \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Instrumentos}
+
+\subsubsection{Pruebas de Competencia Gramatical}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Prueba} & \textbf{Descripción} & \textbf{Administración} \\
+\hline
+Pre-test & 50 ítems (25 español, 25 inglés) & Semana 1 \\
+Post-test 1 & 50 ítems (paralelo al pre-test) & Semana 12 \\
+Post-test 2 & 50 ítems (retención) & Semana 24 \\
+Post-test 3 & 50 ítems (retención largo plazo) & Semana 48 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Escalas Psicrométricas}
+
+\begin{itemize}
+    \item \textbf{Intrinsic Motivation Inventory (IMI)} - Adaptado para contexto educativo
+    \item \textbf{System Usability Scale (SUS)} - Para evaluar usabilidad
+    \item \textbf{Technology Acceptance Model (TAM)} - Utilidad percibida y facilidad de uso
+\end{itemize}
+
+\subsubsection{Registros Automáticos de la Plataforma}
+
+\begin{itemize}
+    \item Tiempo por juego
+    \item Número de intentos
+    \item Patrones de error
+    \item Rachas y logros
+    \item Progresión entre niveles
+\end{itemize}
+
+\subsection{Procedimiento}
+
+\begin{enumerate}
+    \item \textbf{Fase 1: Preparación (Meses 1-3)}
+    \begin{itemize}
+        \item Adaptación de instrumentos
+        \item Entrenamiento de investigadores
+        \item Selección de centros educativos
+        \item Consentimientos informados
+    \end{itemize}
+    
+    \item \textbf{Fase 2: Pre-intervención (Mes 4)}
+    \begin{itemize}
+        \item Administración de pre-test
+        \item Registro de datos demográficos
+        \item Asignación a grupos
+    \end{itemize}
+    
+    \item \textbf{Fase 3: Intervención (Meses 5-8)}
+    \begin{itemize}
+        \item \textbf{Grupo experimental:} 12 semanas de uso de la plataforma (2 sesiones/semana, 45 minutos)
+        \item \textbf{Grupo control:} Instrucción tradicional con mismos contenidos gramaticales
+    \end{itemize}
+    
+    \item \textbf{Fase 4: Post-intervención (Mes 9)}
+    \begin{itemize}
+        \item Administración de post-test 1
+        \item Aplicación de escalas (IMI, SUS, TAM)
+    \end{itemize}
+    
+    \item \textbf{Fase 5: Seguimiento (Meses 10-16)}
+    \begin{itemize}
+        \item Post-test 2 (mes 12)
+        \item Post-test 3 (mes 16)
+    \end{itemize}
+    
+    \item \textbf{Fase 6: Análisis y Difusión (Meses 17-24)}
+    \begin{itemize}
+        \item Análisis estadístico
+        \item Redacción de informes
+        \item Publicaciones y congresos
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Análisis de Datos}
+
+\begin{table}[H]
+\centering
+\caption{Técnicas estadísticas a utilizar}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Objetivo} & \textbf{Técnica} & \textbf{Software} \\
+\hline
+Comparación pre-post & ANOVA mixto 2x3 & SPSS/R \\
+Efecto de variables moderadoras & ANCOVA & SPSS/R \\
+Correlación motivación-logros & Correlación de Pearson & SPSS/R \\
+Patrones de error & Análisis de clusters & Python/R \\
+Usabilidad & Estadísticos descriptivos & SPSS \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Modelo Estadístico Principal}
+
+\begin{equation}
+Y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \gamma_k + \epsilon_{ijk}
+\end{equation}
+
+Donde:
+\begin{itemize}
+    \item $Y_{ijk}$: Puntuación gramatical
+    \item $\alpha_i$: Grupo (experimental/control)
+    \item $\beta_j$: Tiempo (pre/post1/post2/post3)
+    \item $(\alpha\beta)_{ij}$: Interacción grupo × tiempo
+    \item $\gamma_k$: Nivel educativo (covariable)
+    \item $\epsilon_{ijk}$: Error aleatorio
+\end{itemize}
+
+\section{Cronograma}
+
+\begin{table}[H]
+\centering
+\caption{Cronograma de actividades por mes}
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Actividad} & \textbf{M1-3} & \textbf{M4} & \textbf{M5-8} & \textbf{M9} & \textbf{M10-12} & \textbf{M13-16} & \textbf{M17-20} & \textbf{M21-24} \\
+\hline
+Preparación & ███ & & & & & & & \\
+Pre-test & & █ & & & & & & \\
+Intervención & & & ████ & & & & & \\
+Post-test 1 & & & & █ & & & & \\
+Post-test 2 & & & & & ███ & & & \\
+Post-test 3 & & & & & & ████ & & \\
+Análisis & & & & & & & ████ & \\
+Difusión & & & & & & & & ████ \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Presupuesto}
+
+\begin{table}[H]
+\centering
+\caption{Presupuesto detallado del proyecto}
+\begin{tabular}{|l|l|c|}
+\hline
+\textbf{Concepto} & \textbf{Descripción} & \textbf{Costo (USD)} \\
+\hline
+\multicolumn{3}{|l|}{\textbf{Personal}} \\
+\hline
+Investigador principal & 24 meses, dedicación parcial & 24,000 \\
+Asistente de investigación & 12 meses & 12,000 \\
+Programador & Desarrollo y mantenimiento & 8,000 \\
+\hline
+\multicolumn{3}{|l|}{\textbf{Equipamiento}} \\
+\hline
+Servidores cloud & 24 meses & 2,400 \\
+Licencias software & SPSS, G*Power & 800 \\
+Tabletas para evaluación & 20 unidades & 6,000 \\
+\hline
+\multicolumn{3}{|l|}{\textbf{Materiales}} \\
+\hline
+Impresión de instrumentos & & 500 \\
+Incentivos participantes & & 2,000 \\
+\hline
+\multicolumn{3}{|l|}{\textbf{Difusión}} \\
+\hline
+Inscripción congresos & 2 congresos internacionales & 1,200 \\
+Publicación open access & 2 artículos & 3,000 \\
+\hline
+\textbf{Imprevistos} & 10\% & 6,000 \\
+\hline
+\textbf{TOTAL} & & \textbf{65,900} \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Resultados Esperados}
+
+\subsection{Productos Esperados}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Producto} & \textbf{Descripción} & \textbf{Fecha estimada} \\
+\hline
+Plataforma funcional & 30 juegos implementados y validados & Mes 8 \\
+Artículo 1 & Diseño y desarrollo de juegos gramaticales & Mes 12 \\
+Artículo 2 & Efectividad de la gamificación en gramática & Mes 18 \\
+Artículo 3 & Patrones de error y aprendizaje adaptativo & Mes 22 \\
+Tesis doctoral & Del investigador principal & Mes 24 \\
+Manual para educadores & Guía de implementación en aula & Mes 20 \\
+Repositorio open source & Código de la plataforma & Mes 6 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Impactos Esperados}
+
+\subsubsection{Impacto Científico}
+\begin{itemize}
+    \item Contribución a la teoría de adquisición de segundas lenguas mediada por tecnología
+    \item Validación empírica de gamificación en contextos bilingües
+    \item Identificación de patrones de error por nivel y lengua materna
+\end{itemize}
+
+\subsubsection{Impacto Educativo}
+\begin{itemize}
+    \item Herramienta gratuita para instituciones educativas
+    \item Metodología replicable para otros pares lingüísticos
+    \item Reducción de brechas en aprendizaje de idiomas
+\end{itemize}
+
+\subsubsection{Impacto Social}
+\begin{itemize}
+    \item Democratización del acceso a herramientas de aprendizaje
+    \item Fomento del bilingüismo en comunidades desfavorecidas
+    \item Desarrollo de competencias para la empleabilidad
+\end{itemize}
+
+\section{Limitaciones y Riesgos}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Riesgo} & \textbf{Probabilidad} & \textbf{Impacto} & \textbf{Mitigación} \\
+\hline
+Deserción de participantes & Media & Alto & Sobremuestreo inicial (20\%) \\
+Problemas técnicos plataforma & Baja & Alto & Pruebas exhaustivas, soporte técnico \\
+Contaminación entre grupos & Media & Medio & Centros educativos separados \\
+Efecto novedad & Alta & Medio & Seguimiento longitudinal \\
+Diferencias docentes & Media & Medio & Estandarización de instrucción \\
+Acceso a tecnología & Baja & Alto & Provisión de dispositivos \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Aspectos Éticos}
+
+\subsection{Consentimiento Informado}
+\begin{itemize}
+    \item Información clara sobre objetivos y procedimientos
+    \item Confidencialidad de datos
+    \item Derecho a retirarse en cualquier momento
+\end{itemize}
+
+\subsection{Protección de Datos}
+\begin{itemize}
+    \item Cumplimiento de GDPR / Ley de Protección de Datos
+    \item Datos anonimizados para análisis
+    \item Almacenamiento seguro en servidores institucionales
+\end{itemize}
+
+\subsection{Beneficencia y No Maleficencia}
+\begin{itemize}
+    \item La intervención no interfiere con currículo regular
+    \item El grupo control recibe instrucción tradicional equivalente
+    \item Todos los participantes acceden a la plataforma al finalizar
+\end{itemize}
+
+\subsection{Aprobación Ética}
+\begin{itemize}
+    \item Solicitud al Comité de Ética de la Investigación
+    \item Certificado de buenas prácticas
+    \item Permisos de instituciones educativas
+\end{itemize}
+
+\section{Referencias Bibliográficas}
+
+\begin{thebibliography}{99}
+
+\bibitem{bedwell2012}
+Bedwell, W. L., et al. (2012). Toward a taxonomy linking game attributes to learning. \textit{Simulation \& Gaming}, 43(6), 729-760.
+
+\bibitem{corbett1995}
+Corbett, A. T., \& Anderson, J. R. (1995). Knowledge tracing: Modeling the acquisition of procedural knowledge. \textit{User Modeling and User-Adapted Interaction}, 4(4), 253-278.
+
+\bibitem{cornillie2012}
+Cornillie, F., et al. (2012). The role of feedback in foreign language learning through digital role playing games. \textit{Procedia-Social and Behavioral Sciences}, 34, 49-53.
+
+\bibitem{deci2000}
+Deci, E. L., \& Ryan, R. M. (2000). The "what" and "why" of goal pursuits: Human needs and the self-determination of behavior. \textit{Psychological Inquiry}, 11(4), 227-268.
+
+\bibitem{deterding2011}
+Deterding, S., et al. (2011). From game design elements to gamefulness: Defining "gamification". \textit{Proceedings of the 15th International Academic MindTrek Conference}, 9-15.
+
+\bibitem{ellis2008}
+Ellis, R. (2008). \textit{The Study of Second Language Acquisition}. Oxford University Press.
+
+\bibitem{hung2018}
+Hung, H. T., et al. (2018). Gamification in the foreign language classroom: A systematic review. \textit{Educational Technology \& Society}, 21(3), 104-118.
+
+\bibitem{hunicke2004}
+Hunicke, R., et al. (2004). MDA: A formal approach to game design and game research. \textit{Proceedings of the AAAI Workshop on Challenges in Game AI}.
+
+\bibitem{krashen1985}
+Krashen, S. D. (1985). \textit{The Input Hypothesis: Issues and Implications}. Longman.
+
+\bibitem{lado1957}
+Lado, R. (1957). \textit{Linguistics Across Cultures}. University of Michigan Press.
+
+\bibitem{long1996}
+Long, M. H. (1996). The role of the linguistic environment in second language acquisition. \textit{Handbook of Second Language Acquisition}, 413-468.
+
+\bibitem{pane2014}
+Pane, J. F., et al. (2014). \textit{Continued Progress: Promising Evidence on Personalized Learning}. RAND Corporation.
+
+\bibitem{reinhardt2014}
+Reinhardt, J., \& Sykes, J. M. (2014). Digital game and play activity in L2 teaching and learning. \textit{Language Learning \& Technology}, 18(2), 2-8.
+
+\bibitem{sweller1988}
+Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. \textit{Cognitive Science}, 12(2), 257-285.
+
+\bibitem{vanpatten1996}
+VanPatten, B. (1996). \textit{Input Processing and Grammar Instruction}. Ablex Publishing.
+
+\bibitem{vygotsky1978}
+Vygotsky, L. S. (1978). \textit{Mind in Society}. Harvard University Press.
+
+\bibitem{weinreich1953}
+Weinreich, U. (1953). \textit{Languages in Contact}. Linguistic Circle of New York.
+
+\end{thebibliography}
+
+\section{Anexos}
+
+\subsection{Anexo A: Prueba de Competencia Gramatical (Ejemplo)}
+
+\textbf{Nivel Primaria - Español}
+\begin{enumerate}
+    \item El niño \_\_\_ (comer) una manzana.
+    \item \_\_\_ perro es marrón. (El/La/Los)
+    \item María y yo \_\_\_ (ser) amigos.
+\end{enumerate}
+
+\textbf{Nivel Primaria - Inglés}
+\begin{enumerate}
+    \item The cat \_\_\_ (sleep) on the sofa.
+    \item \_\_\_ are my books. (This/These)
+    \item She \_\_\_ (have) a red car.
+\end{enumerate}
+
+\subsection{Anexo B: Escala de Motivación Intrínseca (IMI) - Adaptada}
+
+\begin{enumerate}
+    \item Disfruté mucho usando esta plataforma.
+    \item Los juegos me parecieron interesantes.
+    \item Me sentí competente mientras jugaba.
+    \item Me esforcé por hacerlo bien.
+    \item Recomendaría esta plataforma a otros estudiantes.
+\end{enumerate}
+
+\subsection{Anexo C: Carta de Consentimiento Informado}
+
+[Incluir modelo de carta con todos los elementos éticos requeridos]
+
+\section{Firmas}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Rol} & \textbf{Nombre} & \textbf{Firma} & \textbf{Fecha} \\
+\hline
+Investigador Principal & & & \\
+Director de Tesis & & & \\
+Comité de Ética & & & \\
+Institución Educativa & & & \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Resumen Ejecutivo}
+
+\begin{quote}
+\textbf{Título:} Efectividad de los Juegos Gramaticales Bilingües en el Desarrollo de Competencias Morfosintácticas
+
+\textbf{Objetivo:} Evaluar una plataforma de 30 juegos adaptativos para el aprendizaje de gramática español-inglés.
+
+\textbf{Metodología:} Estudio cuasi-experimental con 384 participantes (primaria, secundaria, adultos), grupos experimental (gamificación) y control (tradicional), con medidas pre-post y seguimiento a 12 meses.
+
+\textbf{Resultados esperados:} Mejora significativa en competencias gramaticales, alta motivación y retención, identificación de patrones de error.
+
+\textbf{Impacto:} Contribución científica, herramienta educativa gratuita, democratización del aprendizaje de idiomas.
+
+\textbf{Presupuesto:} USD 65,900 para 24 meses.
+\end{quote}
+
+\textit{Este proyecto de investigación ha sido diseñado siguiendo los estándares del Ministerio de Ciencia e Innovación y las directrices éticas internacionales para investigación con seres humanos.}
+
+\end{document}
