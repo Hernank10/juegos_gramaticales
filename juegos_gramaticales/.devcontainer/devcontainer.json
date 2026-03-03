@@ -1,0 +1,47 @@
+{
+  "name": "Juegos Gramaticales Bilingües",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18"
+    },
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "forwardPorts": [5000],
+  "portsAttributes": {
+    "5000": {
+      "label": "Aplicación Flask",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "postCreateCommand": "bash setup.sh",
+  "postStartCommand": "python run.py &",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "batisteo.vscode-django",
+        "wholroyd.jinja",
+        "esbenp.prettier-vscode",
+        "ritwickdey.LiveServer"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "editor.formatOnSave": true,
+        "files.associations": {
+          "*.html": "jinja-html"
+        }
+      }
+    }
+  },
+  "remoteUser": "vscode"
+}
